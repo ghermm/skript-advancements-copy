@@ -28,13 +28,13 @@ public class ExprAdvancementColumn extends SimpleExpression<Number> {
 
     static {
         Skript.registerExpression(ExprAdvancementColumn.class, Number.class, ExpressionType.SIMPLE,
-                "[the] (column|y[-coord[inate]]) [of [the] [last (created|made)] [custom] advancement]",
-                "[the] [[last (created|made)] [custom] advancement[']s] (column|y[-coord[inate]])");
+                "[the] (column|x[-coord[inate]]) [of [the] [last (created|made)] [custom] advancement]",
+                "[the] [[last (created|made)] [custom] advancement[']s] (column|x[-coord[inate]])");
     }
 
     @Override
     protected @Nullable Number[] get(Event e) {
-        return new Number[]{Creator.lastCreatedAdvancement.getDisplay().getY()};
+        return new Number[]{Creator.lastCreatedAdvancement.getDisplay().getX()};
     }
 
     @Override
@@ -68,6 +68,6 @@ public class ExprAdvancementColumn extends SimpleExpression<Number> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        Creator.lastCreatedAdvancement.setY(min(max(((Number) delta[0]).floatValue(), 0), 9999999));
+        Creator.lastCreatedAdvancement.setX(min(max(((Number) delta[0]).floatValue(), 0), 9999999));
     }
 }

@@ -28,8 +28,8 @@ public class ExprAdvancementRow extends SimpleExpression<Number> {
 
     static {
         Skript.registerExpression(ExprAdvancementRow.class, Number.class, ExpressionType.SIMPLE,
-                "[the] (row|x[-coord[inate]]) [of [the] [last (created|made)] [custom] advancement]",
-                "[the] [[last (created|made)] [custom] advancement[']s] (row|x[-coord[inate]])");
+                "[the] (row|y[-coord[inate]]) [of [the] [last (created|made)] [custom] advancement]",
+                "[the] [[last (created|made)] [custom] advancement[']s] (row|y[-coord[inate]])");
     }
 
     @Override
