@@ -2,13 +2,17 @@ package me.hotpocket.skriptadvancements;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.SkriptAddon;
+import ch.njol.skript.lang.Trigger;
 import com.fren_gor.ultimateAdvancementAPI.AdvancementMain;
 import com.fren_gor.ultimateAdvancementAPI.AdvancementTab;
 import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
+import com.fren_gor.ultimateAdvancementAPI.advancement.Advancement;
 import com.fren_gor.ultimateAdvancementAPI.events.PlayerLoadingCompletedEvent;
+import com.fren_gor.ultimateAdvancementAPI.events.advancement.AdvancementProgressionUpdateEvent;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import me.hotpocket.skriptadvancements.bstats.Metrics;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCompleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,10 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public final class SkriptAdvancements extends JavaPlugin implements Listener {
 
@@ -32,6 +33,7 @@ public final class SkriptAdvancements extends JavaPlugin implements Listener {
     private SkriptAddon addon;
     private static List<UUID> joined = new ArrayList<>();
     private static boolean updated = true;
+    public static HashMap<Advancement, Trigger> triggers = new HashMap<>();
 
     public static SkriptAdvancements getInstance() {
         return instance;
@@ -83,6 +85,13 @@ public final class SkriptAdvancements extends JavaPlugin implements Listener {
         for (AdvancementTab tab : api.getTabs())
             if (tab.isInitialised())
                 tab.updateAdvancementsToTeam(event.getPlayer());
+    }
+
+    @EventHandler
+    private void onAdvancementProgression(AdvancementProgressionUpdateEvent event) {
+        if (event.getNewProgression() == event.getAdvancement().getMaxProgression() && event.getNewProgression() != event.getOldProgression()) {
+            Bukkit.getServer().getPluginManager().callEvent(new AdvancementCompleteEvent(event.getTeamProgression(), event.getOldProgression(), event.getNewProgression(), event.getAdvancement()));
+        }
     }
 
     @EventHandler
