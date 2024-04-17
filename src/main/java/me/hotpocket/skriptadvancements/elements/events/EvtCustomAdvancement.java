@@ -31,19 +31,5 @@ public class EvtCustomAdvancement extends SimpleEvent {
             }
 
         }, 0);
-        EventValues.registerEventValue(AdvancementCompleteEvent.class, Number.class, new Getter<Number, AdvancementCompleteEvent>() {
-            @Override
-            public Number get(AdvancementCompleteEvent e) {
-                return e.getOldProgression();
-            }
-
-        }, 0);
-        EventValues.registerEventValue(AdvancementCompleteEvent.class, Number.class, new Getter<Number, AdvancementCompleteEvent>() {
-            @Override
-            public Number get(AdvancementCompleteEvent e) {
-                return e.getNewProgression();
-            }
-
-        }, 1);
     }
 }

@@ -35,7 +35,6 @@ public class SecComplete extends Section {
 	@Override
 	protected @Nullable TriggerItem walk(Event e) {
 		Creator.lastCreatedAdvancement.setTrigger(trigger);
-		Creator.lastCreatedAdvancement.setEvent(e);
 		return walk(e, false);
 	}
 

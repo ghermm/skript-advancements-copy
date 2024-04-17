@@ -8,6 +8,7 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.RootAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.fren_gor.ultimateAdvancementAPI.advancement.multiParents.MultiParentsAdvancement;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCompleteEvent;
 import me.hotpocket.skriptadvancements.utils.CustomUtils;
 import me.hotpocket.skriptadvancements.utils.advancement.HiddenAdvancement;
 import me.hotpocket.skriptadvancements.utils.advancement.HiddenMultiParentsAdvancement;
@@ -17,7 +18,6 @@ import me.hotpocket.skriptadvancements.utils.advancement.VisibilityType;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.UnsafeValues;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -40,7 +40,6 @@ public class TempAdvancement {
     public static String backgroundString = "";
     private static VisibilityType visibility;
     private static Trigger trigger;
-    private static Event event;
 
 
     public TempAdvancement(String name, String tab, AdvancementDisplay display, List<String> parents, int maxProgression, boolean root, Material background, VisibilityType visible) {
@@ -60,14 +59,6 @@ public class TempAdvancement {
 
     public void setTrigger(Trigger trig) {
         trigger = trig;
-    }
-
-    public Event getEvent() {
-        return event;
-    }
-
-    public void setEvent(Event evt) {
-        event = evt;
     }
 
     public String getName() {
@@ -196,6 +187,12 @@ public class TempAdvancement {
         return null;
     }
 
+    private Event getEvent(Player player, Advancement advancement) {
+        AdvancementCompleteEvent event = new AdvancementCompleteEvent(player, advancement);
+        Bukkit.getServer().getPluginManager().callEvent(event);
+        return event;
+    }
+
     public void build() {
         if (Creator.lastCreatedTab.equals(tab)) {
             Advancement advancement = null;
@@ -221,7 +218,7 @@ public class TempAdvancement {
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
                                 if (getTrigger() != null) {
-                                    getTrigger().execute(getEvent());
+                                    getTrigger().execute(getEvent(player, this));
                                 }
                             }
                         };
@@ -231,7 +228,7 @@ public class TempAdvancement {
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
                                 if (getTrigger() != null) {
-                                    getTrigger().execute(getEvent());
+                                    getTrigger().execute(getEvent(player, this));
                                 }
                             }
                         };
@@ -242,7 +239,7 @@ public class TempAdvancement {
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
                                 if (getTrigger() != null) {
-                                    getTrigger().execute(getEvent());
+                                    getTrigger().execute(getEvent(player, this));
                                 }
                             }
                         };
@@ -252,7 +249,7 @@ public class TempAdvancement {
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
                                 if (getTrigger() != null) {
-                                    getTrigger().execute(getEvent());
+                                    getTrigger().execute(getEvent(player, this));
                                 }
                             }
                         };
@@ -272,7 +269,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -281,7 +278,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -290,7 +287,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -302,7 +299,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -311,7 +308,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -320,7 +317,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -335,7 +332,7 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent());
+                                                getTrigger().execute(getEvent(player, this));
                                             }
                                         }
                                     };
@@ -344,7 +341,7 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent());
+                                                getTrigger().execute(getEvent(player, this));
                                             }
                                         }
                                     };
@@ -353,7 +350,7 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent());
+                                                getTrigger().execute(getEvent(player, this));
                                             }
                                         }
                                     };
@@ -365,7 +362,7 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent());
+                                                getTrigger().execute(getEvent(player, this));
                                             }
                                         }
                                     };
@@ -374,7 +371,7 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent());
+                                                getTrigger().execute(getEvent(player, this));
                                             }
                                         }
                                     };
@@ -383,7 +380,7 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent());
+                                                getTrigger().execute(getEvent(player, this));
                                             }
                                         }
                                     };
@@ -400,7 +397,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -409,7 +406,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -418,7 +415,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -430,7 +427,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -439,7 +436,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };
@@ -448,7 +445,7 @@ public class TempAdvancement {
                                     public void giveReward(@NotNull Player player) {
                                         super.giveReward(player);
                                         if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent());
+                                            getTrigger().execute(getEvent(player, this));
                                         }
                                     }
                                 };

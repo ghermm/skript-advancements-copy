@@ -88,13 +88,6 @@ public final class SkriptAdvancements extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    private void onAdvancementProgression(AdvancementProgressionUpdateEvent event) {
-        if (event.getNewProgression() == event.getAdvancement().getMaxProgression() && event.getNewProgression() != event.getOldProgression()) {
-            Bukkit.getServer().getPluginManager().callEvent(new AdvancementCompleteEvent(event.getTeamProgression(), event.getOldProgression(), event.getNewProgression(), event.getAdvancement()));
-        }
-    }
-
-    @EventHandler
     private void onJoin(PlayerJoinEvent event) {
         if (!updated) {
             if (event.getPlayer().isOp() && !joined.contains(event.getPlayer().getUniqueId())) {

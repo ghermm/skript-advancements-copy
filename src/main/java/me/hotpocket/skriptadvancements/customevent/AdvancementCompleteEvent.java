@@ -6,29 +6,24 @@ import com.fren_gor.ultimateAdvancementAPI.events.advancement.AdvancementProgres
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-public final class AdvancementCompleteEvent extends AdvancementProgressionUpdateEvent implements Cancellable {
+public final class AdvancementCompleteEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
     private Player player;
-    private boolean cancelled;
+    private Advancement advancement;
 
-    public AdvancementCompleteEvent(TeamProgression team, int oldProgression, int newProgression, Advancement advancement) {
-        super(team, oldProgression, newProgression, advancement);
-        if (team.getAMember() != null)
-            player = Bukkit.getPlayer(team.getAMember());
+    public AdvancementCompleteEvent(Player player, Advancement advancement) {
+        this.player = player;
+        this.advancement = advancement;
     }
 
     public Player getPlayer() {
         return player;
     }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean cancel) {
-        cancelled = cancel;
+    public Advancement getAdvancement() {
+        return advancement;
     }
 
     public HandlerList getHandlers() {
