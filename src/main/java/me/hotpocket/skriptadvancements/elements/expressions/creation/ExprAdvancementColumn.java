@@ -34,7 +34,7 @@ public class ExprAdvancementColumn extends SimpleExpression<Number> {
 
     @Override
     protected @Nullable Number[] get(Event e) {
-        return new Number[]{Creator.lastCreatedAdvancement.getDisplay().getX()};
+        return new Number[]{Creator.lastCreatedAdvancement.getDisplay().getY()};
     }
 
     @Override
@@ -68,6 +68,6 @@ public class ExprAdvancementColumn extends SimpleExpression<Number> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        Creator.lastCreatedAdvancement.setX(min(max(((Number) delta[0]).floatValue(), 0), 9999999));
+        Creator.lastCreatedAdvancement.setY(min(max(((Number) delta[0]).floatValue(), 0), 9999999));
     }
 }
