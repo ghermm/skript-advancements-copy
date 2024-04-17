@@ -8,6 +8,7 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.RootAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import com.fren_gor.ultimateAdvancementAPI.advancement.multiParents.MultiParentsAdvancement;
+import me.hotpocket.skriptadvancements.SkriptAdvancements;
 import me.hotpocket.skriptadvancements.customevent.AdvancementCompleteEvent;
 import me.hotpocket.skriptadvancements.utils.CustomUtils;
 import me.hotpocket.skriptadvancements.utils.advancement.HiddenAdvancement;
@@ -40,7 +41,6 @@ public class TempAdvancement {
     public static String backgroundString = "";
     private static VisibilityType visibility;
     private static Trigger trigger;
-
 
     public TempAdvancement(String name, String tab, AdvancementDisplay display, List<String> parents, int maxProgression, boolean root, Material background, VisibilityType visible) {
         TempAdvancement.name = name;
@@ -187,10 +187,10 @@ public class TempAdvancement {
         return null;
     }
 
-    private Event getEvent(Player player, Advancement advancement) {
+    private void callEvent(Player player, Advancement advancement) {
         AdvancementCompleteEvent event = new AdvancementCompleteEvent(player, advancement);
         Bukkit.getServer().getPluginManager().callEvent(event);
-        return event;
+        SkriptAdvancements.triggers.get(advancement).execute(event);
     }
 
     public void build() {
@@ -212,35 +212,32 @@ public class TempAdvancement {
             }
             if (root) {
                 if (maxProgression > 0) {
-                    if (getBackgroundString().equals(""))
+                    if (getBackgroundString().equals("")) {
                         advancement = new RootAdvancement(CustomUtils.getAPI().getAdvancementTab(tab), name, display, getTexture(background), maxProgression) {
                             @Override
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
-                                if (getTrigger() != null) {
-                                    getTrigger().execute(getEvent(player, this));
-                                }
+                                callEvent(player, this);
                             }
                         };
+                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                    }
                     else
                         advancement = new RootAdvancement(CustomUtils.getAPI().getAdvancementTab(tab), name, display, getBackgroundString(), maxProgression) {
                             @Override
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
-                                if (getTrigger() != null) {
-                                    getTrigger().execute(getEvent(player, this));
-                                }
+                                callEvent(player, this);
                             }
                         };
+                    SkriptAdvancements.triggers.put(advancement, getTrigger());
                 } else {
                     if (getBackgroundString().equals(""))
                         advancement = new RootAdvancement(CustomUtils.getAPI().getAdvancementTab(tab), name, display, getTexture(background)) {
                             @Override
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
-                                if (getTrigger() != null) {
-                                    getTrigger().execute(getEvent(player, this));
-                                }
+                                callEvent(player, this);
                             }
                         };
                     else
@@ -248,11 +245,10 @@ public class TempAdvancement {
                             @Override
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
-                                if (getTrigger() != null) {
-                                    getTrigger().execute(getEvent(player, this));
-                                }
+                                callEvent(player, this);
                             }
                         };
+                    SkriptAdvancements.triggers.put(advancement, getTrigger());
                 }
             } else {
                 if (parents.size() > 1) {
@@ -264,126 +260,138 @@ public class TempAdvancement {
                     if (parentAdvancements.size() > 1) {
                         if (maxProgression > 0) {
                             switch (getVisibility()) {
-                                case HIDDEN -> advancement = new HiddenMultiParentsAdvancement(name, display, maxProgression, parentAdvancements) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                case HIDDEN -> {
+                                    advancement = new HiddenMultiParentsAdvancement(name, display, maxProgression, parentAdvancements) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
-                                case PARENT_GRANTED -> advancement = new ParentGrantedMultiParentsAdvancement(name, display, maxProgression, parentAdvancements) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
+                                case PARENT_GRANTED -> {
+                                    advancement = new ParentGrantedMultiParentsAdvancement(name, display, maxProgression, parentAdvancements) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
-                                default -> advancement = new MultiParentsAdvancement(name, display, maxProgression, parentAdvancements) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
+                                default -> {
+                                    advancement = new MultiParentsAdvancement(name, display, maxProgression, parentAdvancements) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
                             }
                         } else {
                             switch (getVisibility()) {
-                                case HIDDEN -> advancement = new HiddenMultiParentsAdvancement(name, display, parentAdvancements) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                case HIDDEN -> {
+                                    advancement = new HiddenMultiParentsAdvancement(name, display, parentAdvancements) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
-                                case PARENT_GRANTED -> advancement = new ParentGrantedMultiParentsAdvancement(name, display, parentAdvancements) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
+                                case PARENT_GRANTED -> {
+                                    advancement = new ParentGrantedMultiParentsAdvancement(name, display, parentAdvancements) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
-                                default -> advancement = new MultiParentsAdvancement(name, display, parentAdvancements) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
+                                default -> {
+                                    advancement = new MultiParentsAdvancement(name, display, parentAdvancements) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
                             }
                         }
                     } else {
                         if (fromString(parents.get(0)) != null) {
                             if (maxProgression > 0) {
                                 switch (getVisibility()) {
-                                    case HIDDEN -> advancement = new HiddenAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
-                                        @Override
-                                        public void giveReward(@NotNull Player player) {
-                                            super.giveReward(player);
-                                            if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent(player, this));
+                                    case HIDDEN -> {
+                                        advancement = new HiddenAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
+                                            @Override
+                                            public void giveReward(@NotNull Player player) {
+                                                super.giveReward(player);
+                                                callEvent(player, this);
                                             }
-                                        }
-                                    };
-                                    case PARENT_GRANTED -> advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
-                                        @Override
-                                        public void giveReward(@NotNull Player player) {
-                                            super.giveReward(player);
-                                            if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent(player, this));
+                                        };
+                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    }
+                                    case PARENT_GRANTED -> {
+                                        advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
+                                            @Override
+                                            public void giveReward(@NotNull Player player) {
+                                                super.giveReward(player);
+                                                callEvent(player, this);
                                             }
-                                        }
-                                    };
-                                    default -> advancement = new BaseAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
-                                        @Override
-                                        public void giveReward(@NotNull Player player) {
-                                            super.giveReward(player);
-                                            if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent(player, this));
+                                        };
+                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    }
+                                    default -> {
+                                        advancement = new BaseAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
+                                            @Override
+                                            public void giveReward(@NotNull Player player) {
+                                                super.giveReward(player);
+                                                callEvent(player, this);
                                             }
-                                        }
-                                    };
+                                        };
+                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    }
                                 }
                             } else {
                                 switch (getVisibility()) {
-                                    case HIDDEN -> advancement = new HiddenAdvancement(name, display, fromString(parents.get(0))) {
-                                        @Override
-                                        public void giveReward(@NotNull Player player) {
-                                            super.giveReward(player);
-                                            if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent(player, this));
+                                    case HIDDEN -> {
+                                        advancement = new HiddenAdvancement(name, display, fromString(parents.get(0))) {
+                                            @Override
+                                            public void giveReward(@NotNull Player player) {
+                                                super.giveReward(player);
+                                                callEvent(player, this);
                                             }
-                                        }
-                                    };
-                                    case PARENT_GRANTED -> advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0))) {
-                                        @Override
-                                        public void giveReward(@NotNull Player player) {
-                                            super.giveReward(player);
-                                            if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent(player, this));
+                                        };
+                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    }
+                                    case PARENT_GRANTED -> {
+                                        advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0))) {
+                                            @Override
+                                            public void giveReward(@NotNull Player player) {
+                                                super.giveReward(player);
+                                                callEvent(player, this);
                                             }
-                                        }
-                                    };
-                                    default -> advancement = new BaseAdvancement(name, display, fromString(parents.get(0))) {
-                                        @Override
-                                        public void giveReward(@NotNull Player player) {
-                                            super.giveReward(player);
-                                            if (getTrigger() != null) {
-                                                getTrigger().execute(getEvent(player, this));
+                                        };
+                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    }
+                                    default -> {
+                                        advancement = new BaseAdvancement(name, display, fromString(parents.get(0))) {
+                                            @Override
+                                            public void giveReward(@NotNull Player player) {
+                                                super.giveReward(player);
+                                                callEvent(player, this);
                                             }
-                                        }
-                                    };
+                                        };
+                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    }
                                 }
                             }
                         }
@@ -392,63 +400,69 @@ public class TempAdvancement {
                     if (fromString(parents.get(0)) != null) {
                         if (maxProgression > 0) {
                             switch (getVisibility()) {
-                                case HIDDEN -> advancement = new HiddenAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                case HIDDEN -> {
+                                    advancement = new HiddenAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
-                                case PARENT_GRANTED -> advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
+                                case PARENT_GRANTED -> {
+                                    advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
-                                default -> advancement = new BaseAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
+                                default -> {
+                                    advancement = new BaseAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
                             }
                         } else {
                             switch (getVisibility()) {
-                                case HIDDEN -> advancement = new HiddenAdvancement(name, display, fromString(parents.get(0))) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                case HIDDEN -> {
+                                    advancement = new HiddenAdvancement(name, display, fromString(parents.get(0))) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
-                                case PARENT_GRANTED -> advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0))) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
+                                case PARENT_GRANTED -> {
+                                    advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0))) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
-                                default -> advancement = new BaseAdvancement(name, display, fromString(parents.get(0))) {
-                                    @Override
-                                    public void giveReward(@NotNull Player player) {
-                                        super.giveReward(player);
-                                        if (getTrigger() != null) {
-                                            getTrigger().execute(getEvent(player, this));
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
+                                default -> {
+                                    advancement = new BaseAdvancement(name, display, fromString(parents.get(0))) {
+                                        @Override
+                                        public void giveReward(@NotNull Player player) {
+                                            super.giveReward(player);
+                                            callEvent(player, this);
                                         }
-                                    }
-                                };
+                                    };
+                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                }
                             }
                         }
                     }

@@ -10,10 +10,12 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.TriggerItem;
 import ch.njol.util.Kleenean;
+import com.fren_gor.ultimateAdvancementAPI.advancement.Advancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.BaseAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.RootAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
+import me.hotpocket.skriptadvancements.SkriptAdvancements;
 import me.hotpocket.skriptadvancements.utils.CustomUtils;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import me.hotpocket.skriptadvancements.utils.creation.TempAdvancement;
@@ -62,6 +64,11 @@ public class SecAdvancementTab extends EffectSection {
             CustomUtils.getAPI().unregisterAdvancementTab(Creator.lastCreatedTab);
         }
         if (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab) != null && (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).isInitialised() || CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).isActive())) {
+            if (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).getAdvancements() != null) {
+                for (Advancement advancement : CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).getAdvancements()) {
+                    SkriptAdvancements.triggers.remove(advancement);
+                }
+            }
             CustomUtils.getAPI().unregisterAdvancementTab(Creator.lastCreatedTab);
         }
         CustomUtils.getAPI().createAdvancementTab(Creator.lastCreatedTab);

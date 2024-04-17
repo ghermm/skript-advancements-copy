@@ -39,13 +39,14 @@ public class Creator {
                 }
             }
         }
-            CustomUtils.getAPI().getAdvancementTab(lastCreatedTab).registerAdvancements(root, baseAdvancements);
-            for (AdvancementTab tab : CustomUtils.getAPI().getTabs()) {
-                for (Player player : Bukkit.getOnlinePlayers()) {
+        CustomUtils.getAPI().getAdvancementTab(lastCreatedTab).registerAdvancements(root, baseAdvancements);
+        for (AdvancementTab tab : CustomUtils.getAPI().getTabs()) {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (tab.isInitialised()) {
                     tab.updateAdvancementsToTeam(player);
                 }
             }
-        //}
+        }
         advancements.remove(lastCreatedTab);
     }
 }
