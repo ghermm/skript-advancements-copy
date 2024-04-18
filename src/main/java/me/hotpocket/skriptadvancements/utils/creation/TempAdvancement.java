@@ -222,7 +222,7 @@ public class TempAdvancement {
                         };
                         SkriptAdvancements.triggers.put(advancement, getTrigger());
                     }
-                    else
+                    else {
                         advancement = new RootAdvancement(CustomUtils.getAPI().getAdvancementTab(tab), name, display, getBackgroundString(), maxProgression) {
                             @Override
                             public void giveReward(@NotNull Player player) {
@@ -230,7 +230,9 @@ public class TempAdvancement {
                                 callEvent(player, this);
                             }
                         };
-                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                        setBackgroundString("");
+                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                    }
                 } else {
                     if (getBackgroundString().equals(""))
                         advancement = new RootAdvancement(CustomUtils.getAPI().getAdvancementTab(tab), name, display, getTexture(background)) {
@@ -240,7 +242,7 @@ public class TempAdvancement {
                                 callEvent(player, this);
                             }
                         };
-                    else
+                    else {
                         advancement = new RootAdvancement(CustomUtils.getAPI().getAdvancementTab(tab), name, display, getBackgroundString()) {
                             @Override
                             public void giveReward(@NotNull Player player) {
@@ -248,6 +250,8 @@ public class TempAdvancement {
                                 callEvent(player, this);
                             }
                         };
+                        setBackgroundString("");
+                    }
                     SkriptAdvancements.triggers.put(advancement, getTrigger());
                 }
             } else {
