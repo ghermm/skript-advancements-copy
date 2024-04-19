@@ -2,6 +2,8 @@ package me.hotpocket.skriptadvancements.utils.creation;
 
 import ch.njol.skript.Skript;
 import ch.njol.skript.lang.Trigger;
+import ch.njol.skript.lang.TriggerItem;
+import ch.njol.skript.variables.Variables;
 import com.fren_gor.ultimateAdvancementAPI.advancement.Advancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.BaseAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.RootAdvancement;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 public class TempAdvancement {
 
@@ -41,6 +44,8 @@ public class TempAdvancement {
     public static String backgroundString = "";
     private static VisibilityType visibility;
     private static Trigger trigger;
+    private static Event event;
+    public BiConsumer<Player,Advancement> consumer;
 
     public TempAdvancement(String name, String tab, AdvancementDisplay display, List<String> parents, int maxProgression, boolean root, Material background, VisibilityType visible) {
         TempAdvancement.name = name;
@@ -53,13 +58,11 @@ public class TempAdvancement {
         TempAdvancement.visibility = visible;
     }
 
-    public Trigger getTrigger() {
-        return trigger;
-    }
+    public Trigger getTrigger() { return trigger; }
+    public void setTrigger(Trigger trig) { trigger = trig; }
 
-    public void setTrigger(Trigger trig) {
-        trigger = trig;
-    }
+    public Event getEvent() { return event; }
+    public void setEvent(Event evt) { event = evt; }
 
     public String getName() {
         return name;
@@ -188,9 +191,14 @@ public class TempAdvancement {
     }
 
     private void callEvent(Player player, Advancement advancement) {
-        AdvancementCompleteEvent event = new AdvancementCompleteEvent(player, advancement);
-        Bukkit.getServer().getPluginManager().callEvent(event);
-        SkriptAdvancements.triggers.get(advancement).execute(event);
+        AdvancementCompleteEvent advancementEvent = new AdvancementCompleteEvent(player, advancement);
+        Bukkit.getServer().getPluginManager().callEvent(advancementEvent);
+    }
+
+    private void runConsumers(Player player, Advancement advancement) {
+        if (SkriptAdvancements.consumers.get(advancement) != null) {
+            SkriptAdvancements.consumers.get(advancement).accept(player, advancement);
+        }
     }
 
     public void build() {
@@ -218,9 +226,10 @@ public class TempAdvancement {
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
                                 callEvent(player, this);
+                                runConsumers(player, this);
                             }
                         };
-                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                        SkriptAdvancements.consumers.put(advancement, consumer);
                     }
                     else {
                         advancement = new RootAdvancement(CustomUtils.getAPI().getAdvancementTab(tab), name, display, getBackgroundString(), maxProgression) {
@@ -228,10 +237,11 @@ public class TempAdvancement {
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
                                 callEvent(player, this);
+                                runConsumers(player, this);
                             }
                         };
                         setBackgroundString("");
-                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                        SkriptAdvancements.consumers.put(advancement, consumer);
                     }
                 } else {
                     if (getBackgroundString().equals(""))
@@ -240,6 +250,7 @@ public class TempAdvancement {
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
                                 callEvent(player, this);
+                                runConsumers(player, this);
                             }
                         };
                     else {
@@ -248,11 +259,12 @@ public class TempAdvancement {
                             public void giveReward(@NotNull Player player) {
                                 super.giveReward(player);
                                 callEvent(player, this);
+                                runConsumers(player, this);
                             }
                         };
                         setBackgroundString("");
                     }
-                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                    SkriptAdvancements.consumers.put(advancement, consumer);
                 }
             } else {
                 if (parents.size() > 1) {
@@ -270,9 +282,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                                 case PARENT_GRANTED -> {
                                     advancement = new ParentGrantedMultiParentsAdvancement(name, display, maxProgression, parentAdvancements) {
@@ -280,9 +293,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                                 default -> {
                                     advancement = new MultiParentsAdvancement(name, display, maxProgression, parentAdvancements) {
@@ -290,9 +304,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                             }
                         } else {
@@ -303,9 +318,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                                 case PARENT_GRANTED -> {
                                     advancement = new ParentGrantedMultiParentsAdvancement(name, display, parentAdvancements) {
@@ -313,9 +329,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                                 default -> {
                                     advancement = new MultiParentsAdvancement(name, display, parentAdvancements) {
@@ -323,9 +340,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                             }
                         }
@@ -339,9 +357,10 @@ public class TempAdvancement {
                                             public void giveReward(@NotNull Player player) {
                                                 super.giveReward(player);
                                                 callEvent(player, this);
+                                                runConsumers(player, this);
                                             }
                                         };
-                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                        SkriptAdvancements.consumers.put(advancement, consumer);
                                     }
                                     case PARENT_GRANTED -> {
                                         advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
@@ -349,9 +368,10 @@ public class TempAdvancement {
                                             public void giveReward(@NotNull Player player) {
                                                 super.giveReward(player);
                                                 callEvent(player, this);
+                                                runConsumers(player, this);
                                             }
                                         };
-                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                        SkriptAdvancements.consumers.put(advancement, consumer);
                                     }
                                     default -> {
                                         advancement = new BaseAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
@@ -359,9 +379,10 @@ public class TempAdvancement {
                                             public void giveReward(@NotNull Player player) {
                                                 super.giveReward(player);
                                                 callEvent(player, this);
+                                                runConsumers(player, this);
                                             }
                                         };
-                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                        SkriptAdvancements.consumers.put(advancement, consumer);
                                     }
                                 }
                             } else {
@@ -372,9 +393,10 @@ public class TempAdvancement {
                                             public void giveReward(@NotNull Player player) {
                                                 super.giveReward(player);
                                                 callEvent(player, this);
+                                                runConsumers(player, this);
                                             }
                                         };
-                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                        SkriptAdvancements.consumers.put(advancement, consumer);
                                     }
                                     case PARENT_GRANTED -> {
                                         advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0))) {
@@ -382,9 +404,10 @@ public class TempAdvancement {
                                             public void giveReward(@NotNull Player player) {
                                                 super.giveReward(player);
                                                 callEvent(player, this);
+                                                runConsumers(player, this);
                                             }
                                         };
-                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                        SkriptAdvancements.consumers.put(advancement, consumer);
                                     }
                                     default -> {
                                         advancement = new BaseAdvancement(name, display, fromString(parents.get(0))) {
@@ -392,9 +415,10 @@ public class TempAdvancement {
                                             public void giveReward(@NotNull Player player) {
                                                 super.giveReward(player);
                                                 callEvent(player, this);
+                                                runConsumers(player, this);
                                             }
                                         };
-                                        SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                        SkriptAdvancements.consumers.put(advancement, consumer);
                                     }
                                 }
                             }
@@ -410,9 +434,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                                 case PARENT_GRANTED -> {
                                     advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
@@ -420,9 +445,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                                 default -> {
                                     advancement = new BaseAdvancement(name, display, fromString(parents.get(0)), maxProgression) {
@@ -430,9 +456,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                             }
                         } else {
@@ -443,9 +470,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                                 case PARENT_GRANTED -> {
                                     advancement = new ParentGrantedAdvancement(name, display, fromString(parents.get(0))) {
@@ -453,9 +481,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                                 default -> {
                                     advancement = new BaseAdvancement(name, display, fromString(parents.get(0))) {
@@ -463,9 +492,10 @@ public class TempAdvancement {
                                         public void giveReward(@NotNull Player player) {
                                             super.giveReward(player);
                                             callEvent(player, this);
+                                            runConsumers(player, this);
                                         }
                                     };
-                                    SkriptAdvancements.triggers.put(advancement, getTrigger());
+                                    SkriptAdvancements.consumers.put(advancement, consumer);
                                 }
                             }
                         }

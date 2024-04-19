@@ -9,6 +9,7 @@ import ch.njol.skript.lang.EffectSection;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.TriggerItem;
+import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
@@ -62,6 +63,7 @@ public class SecAdvancement extends EffectSection {
                 List.of(""), 0, false, Material.STONE, VisibilityType.VISIBLE);
         Creator.tempAdvancements.add(advancement);
         Creator.lastCreatedAdvancement = advancement;
+        Creator.currentEvent = event;
         return walk(event, true);
     }
 

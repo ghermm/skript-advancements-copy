@@ -9,6 +9,7 @@ import ch.njol.skript.lang.EffectSection;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.TriggerItem;
+import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import com.fren_gor.ultimateAdvancementAPI.advancement.Advancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.BaseAdvancement;
@@ -66,7 +67,7 @@ public class SecAdvancementTab extends EffectSection {
         if (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab) != null && (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).isInitialised() || CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).isActive())) {
             if (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).getAdvancements() != null) {
                 for (Advancement advancement : CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).getAdvancements()) {
-                    SkriptAdvancements.triggers.remove(advancement);
+                    SkriptAdvancements.consumers.remove(advancement);
                 }
             }
             CustomUtils.getAPI().unregisterAdvancementTab(Creator.lastCreatedTab);

@@ -11,6 +11,7 @@ import me.hotpocket.skriptadvancements.utils.CustomUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ public class Creator {
     public static HashMap<String, List<Advancement>> advancements = new HashMap<>();
     public static String lastCreatedTab;
     public static TempAdvancement lastCreatedAdvancement;
+    public static Event currentEvent;
 
     public static void build() {
         if (CustomUtils.getAPI().getAdvancementTab(lastCreatedTab) != null && CustomUtils.getAPI().getAdvancementTab(lastCreatedTab).isInitialised()) {

@@ -14,6 +14,7 @@ import com.google.gson.JsonObject;
 import me.hotpocket.skriptadvancements.bstats.Metrics;
 import me.hotpocket.skriptadvancements.customevent.AdvancementCompleteEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 public final class SkriptAdvancements extends JavaPlugin implements Listener {
 
@@ -33,7 +35,7 @@ public final class SkriptAdvancements extends JavaPlugin implements Listener {
     private SkriptAddon addon;
     private static List<UUID> joined = new ArrayList<>();
     private static boolean updated = true;
-    public static HashMap<Advancement, Trigger> triggers = new HashMap<>();
+    public static Map<Advancement, BiConsumer<Player,Advancement>> consumers = new WeakHashMap<>();
 
     public static SkriptAdvancements getInstance() {
         return instance;
