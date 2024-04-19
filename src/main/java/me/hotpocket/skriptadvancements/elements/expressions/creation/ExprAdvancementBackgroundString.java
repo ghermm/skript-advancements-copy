@@ -13,6 +13,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,9 @@ public class ExprAdvancementBackgroundString extends SimpleExpression<String> {
 
     @Override
     protected @Nullable String[] get(Event e) {
-        return new String[]{Creator.lastCreatedAdvancement.getBackgroundString()};
+        if (e instanceof AdvancementCreateEvent event)
+            return new String[]{event.getTempAdvancement().getBackgroundString()};
+        return new String[]{""};
     }
 
     @Override
@@ -66,6 +69,7 @@ public class ExprAdvancementBackgroundString extends SimpleExpression<String> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        Creator.lastCreatedAdvancement.setBackgroundString((String) delta[0]);
+        if (e instanceof AdvancementCreateEvent event)
+            event.getTempAdvancement().setBackgroundString((String) delta[0]);
     }
 }

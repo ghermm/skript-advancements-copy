@@ -17,9 +17,11 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.RootAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
 import me.hotpocket.skriptadvancements.SkriptAdvancements;
+import me.hotpocket.skriptadvancements.customevent.AdvancementTabCreateEvent;
 import me.hotpocket.skriptadvancements.utils.CustomUtils;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import me.hotpocket.skriptadvancements.utils.creation.TempAdvancement;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -57,22 +59,23 @@ public class SecAdvancementTab extends EffectSection {
     @Nullable
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected TriggerItem walk(Event event) {
-        Creator.lastCreatedTab = name.getSingle(event).toLowerCase().replaceAll(" ", "_");
-        if (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab) != null && !CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).isInitialised()) {
-            RootAdvancement root = new RootAdvancement(CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab), "temp_root_advancement_name_1289587", new AdvancementDisplay(Material.DIAMOND, "title", AdvancementFrameType.TASK, false, false, 0, 0, "description"), TempAdvancement.getTexture(Material.DIAMOND_BLOCK));
+        String lastCreatedTab = name.getSingle(event).toLowerCase().replaceAll(" ", "_");
+        Bukkit.getPluginManager().callEvent(new AdvancementTabCreateEvent(lastCreatedTab));
+        if (CustomUtils.getAPI().getAdvancementTab(lastCreatedTab) != null && !CustomUtils.getAPI().getAdvancementTab(lastCreatedTab).isInitialised()) {
+            RootAdvancement root = new RootAdvancement(CustomUtils.getAPI().getAdvancementTab(lastCreatedTab), "temp_root_advancement_name_1289587", new AdvancementDisplay(Material.DIAMOND, "title", AdvancementFrameType.TASK, false, false, 0, 0, "description"), TempAdvancement.getTexture(Material.DIAMOND_BLOCK));
             BaseAdvancement tempBase = new BaseAdvancement("name1", new AdvancementDisplay(Material.DIAMOND, "title", AdvancementFrameType.TASK, false, false, 0, 0, "description"), root);
-            CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).registerAdvancements(root, tempBase);
-            CustomUtils.getAPI().unregisterAdvancementTab(Creator.lastCreatedTab);
+            CustomUtils.getAPI().getAdvancementTab(lastCreatedTab).registerAdvancements(root, tempBase);
+            CustomUtils.getAPI().unregisterAdvancementTab(lastCreatedTab);
         }
-        if (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab) != null && (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).isInitialised() || CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).isActive())) {
-            if (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).getAdvancements() != null) {
-                for (Advancement advancement : CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).getAdvancements()) {
+        if (CustomUtils.getAPI().getAdvancementTab(lastCreatedTab) != null && (CustomUtils.getAPI().getAdvancementTab(lastCreatedTab).isInitialised() || CustomUtils.getAPI().getAdvancementTab(lastCreatedTab).isActive())) {
+            if (CustomUtils.getAPI().getAdvancementTab(lastCreatedTab).getAdvancements() != null) {
+                for (Advancement advancement : CustomUtils.getAPI().getAdvancementTab(lastCreatedTab).getAdvancements()) {
                     SkriptAdvancements.consumers.remove(advancement);
                 }
             }
-            CustomUtils.getAPI().unregisterAdvancementTab(Creator.lastCreatedTab);
+            CustomUtils.getAPI().unregisterAdvancementTab(lastCreatedTab);
         }
-        CustomUtils.getAPI().createAdvancementTab(Creator.lastCreatedTab);
+        CustomUtils.getAPI().createAdvancementTab(lastCreatedTab);
         return walk(event, true);
     }
 

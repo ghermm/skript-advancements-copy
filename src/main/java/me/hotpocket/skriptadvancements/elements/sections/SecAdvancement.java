@@ -13,9 +13,12 @@ import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
+import me.hotpocket.skriptadvancements.customevent.AdvancementTabCreateEvent;
 import me.hotpocket.skriptadvancements.utils.advancement.VisibilityType;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import me.hotpocket.skriptadvancements.utils.creation.TempAdvancement;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -57,14 +60,17 @@ public class SecAdvancement extends EffectSection {
     @Nullable
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected TriggerItem walk(Event event) {
-        TempAdvancement advancement = new TempAdvancement(name.getSingle(event).toLowerCase().replaceAll(" ", "_").replaceAll("[^a-z0-9/._-]", ""),
-                Creator.lastCreatedTab,
-                new AdvancementDisplay(Material.STICK, "", AdvancementFrameType.TASK, true, true, 0, 0, List.of("")),
-                List.of(""), 0, false, Material.STONE, VisibilityType.VISIBLE);
-        Creator.tempAdvancements.add(advancement);
-        Creator.lastCreatedAdvancement = advancement;
-        Creator.currentEvent = event;
-        return walk(event, true);
+        if (event instanceof AdvancementTabCreateEvent evt) {
+            String n = name.getSingle(event).toLowerCase().replaceAll(" ", "_").replaceAll("[^a-z0-9/._-]", "");
+            TempAdvancement advancement = new TempAdvancement(n,
+                    evt.getTabName(),
+                    new AdvancementDisplay(Material.STICK, "", AdvancementFrameType.TASK, true, true, 0, 0, List.of("")),
+                    List.of(""), 0, false, Material.STONE, VisibilityType.VISIBLE);
+            Creator.tempAdvancements.add(advancement);
+            Bukkit.getPluginManager().callEvent(new AdvancementCreateEvent(evt.getTabName(), n, advancement));
+            return walk(event, true);
+        }
+        return walk(event, false);
     }
 
     @Override

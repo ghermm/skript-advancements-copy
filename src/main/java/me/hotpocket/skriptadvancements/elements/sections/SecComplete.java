@@ -9,6 +9,7 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.Advancement;
 import com.fren_gor.ultimateAdvancementAPI.events.advancement.AdvancementProgressionUpdateEvent;
 import me.hotpocket.skriptadvancements.SkriptAdvancements;
 import me.hotpocket.skriptadvancements.customevent.AdvancementCompleteEvent;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.CustomUtils;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import me.hotpocket.skriptadvancements.utils.creation.TempAdvancement;
@@ -41,19 +42,20 @@ public class SecComplete extends Section {
 
 	@Override
 	protected @Nullable TriggerItem walk(Event event) {
-		BiConsumer<Player,Advancement> consumer;
+		if (event instanceof AdvancementCreateEvent evt) {
+		Consumer<AdvancementCompleteEvent> consumer;
 		if (trigger != null) {
-			consumer = (p, a) -> {
+			consumer = (a) -> {
 				if (Creator.currentEvent != null) {
-					Event currentEvent = Creator.currentEvent;
-					AdvancementCompleteEvent advancementEvent = new AdvancementCompleteEvent(p, a);
-					Variables.setLocalVariables(advancementEvent, Variables.copyLocalVariables(currentEvent));
+					AdvancementCompleteEvent advancementEvent = new AdvancementCompleteEvent(a.getPlayer(), a.getAdvancement());
+					Variables.setLocalVariables(advancementEvent, Variables.copyLocalVariables(evt));
 					TriggerItem.walk(trigger, advancementEvent);
-					Variables.setLocalVariables(currentEvent, Variables.copyLocalVariables(advancementEvent));
+					Variables.setLocalVariables(evt, Variables.copyLocalVariables(advancementEvent));
 					Variables.removeLocals(advancementEvent);
 				}
 			};
-			Creator.lastCreatedAdvancement.consumer = consumer;
+			evt.getTempAdvancement().consumer = consumer;
+		}
 		}
 		return walk(event, false);
 	}

@@ -12,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +32,9 @@ public class ExprAdvancementRoot extends SimpleExpression<Boolean> {
 
     @Override
     protected @Nullable Boolean[] get(Event e) {
-        return new Boolean[]{Creator.lastCreatedAdvancement.getRoot()};
+        if (e instanceof AdvancementCreateEvent event)
+            return new Boolean[]{event.getTempAdvancement().getRoot()};
+        return new Boolean[]{false};
     }
 
     @Override
@@ -65,6 +68,7 @@ public class ExprAdvancementRoot extends SimpleExpression<Boolean> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        Creator.lastCreatedAdvancement.setRoot((Boolean) delta[0]);
+        if (e instanceof AdvancementCreateEvent event)
+            event.getTempAdvancement().setRoot((Boolean) delta[0]);
     }
 }

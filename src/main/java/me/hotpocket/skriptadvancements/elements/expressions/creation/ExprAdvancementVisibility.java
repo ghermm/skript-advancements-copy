@@ -12,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.advancement.VisibilityType;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import org.bukkit.event.Event;
@@ -36,7 +37,9 @@ public class ExprAdvancementVisibility extends SimpleExpression<VisibilityType> 
 
     @Override
     protected @Nullable VisibilityType[] get(Event e) {
-        return new VisibilityType[]{Creator.lastCreatedAdvancement.getVisibility()};
+        if (e instanceof AdvancementCreateEvent event)
+            return new VisibilityType[]{event.getTempAdvancement().getVisibility()};
+        return new VisibilityType[]{VisibilityType.VISIBLE};
     }
 
     @Override
@@ -70,6 +73,7 @@ public class ExprAdvancementVisibility extends SimpleExpression<VisibilityType> 
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        Creator.lastCreatedAdvancement.setVisibility((VisibilityType) delta[0]);
+        if (e instanceof AdvancementCreateEvent event)
+            event.getTempAdvancement().setVisibility((VisibilityType) delta[0]);
     }
 }
