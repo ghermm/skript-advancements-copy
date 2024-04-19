@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.*;
 import java.util.*;
+import java.util.function.Consumer;
 
 public final class SkriptAdvancements extends JavaPlugin implements Listener {
 
@@ -33,7 +34,7 @@ public final class SkriptAdvancements extends JavaPlugin implements Listener {
     private SkriptAddon addon;
     private static List<UUID> joined = new ArrayList<>();
     private static boolean updated = true;
-    public static HashMap<Advancement, Trigger> triggers = new HashMap<>();
+    public static Map<Advancement, Consumer<AdvancementCompleteEvent>> consumers = new WeakHashMap<>();
 
     public static SkriptAdvancements getInstance() {
         return instance;

@@ -3,6 +3,7 @@ package me.hotpocket.skriptadvancements.elements.sections;
 import ch.njol.skript.Skript;
 import ch.njol.skript.config.SectionNode;
 import ch.njol.skript.lang.*;
+import ch.njol.skript.variables.Variables;
 import ch.njol.util.Kleenean;
 import com.fren_gor.ultimateAdvancementAPI.events.advancement.AdvancementProgressionUpdateEvent;
 import me.hotpocket.skriptadvancements.SkriptAdvancements;
@@ -12,6 +13,7 @@ import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class SecComplete extends Section {
 
@@ -34,7 +36,19 @@ public class SecComplete extends Section {
 
 	@Override
 	protected @Nullable TriggerItem walk(Event e) {
-		Creator.lastCreatedAdvancement.setTrigger(trigger);
+		Consumer<AdvancementCompleteEvent> consumer;
+		if (trigger != null) {
+			consumer = (a) -> {
+				if (Creator.currentEvent != null) {
+					AdvancementCompleteEvent advancementEvent = new AdvancementCompleteEvent(a.getPlayer(), a.getAdvancement());
+					Variables.setLocalVariables(advancementEvent, Variables.copyLocalVariables(e));
+					TriggerItem.walk(trigger, advancementEvent);
+					Variables.setLocalVariables(e, Variables.copyLocalVariables(advancementEvent));
+					Variables.removeLocals(advancementEvent);
+				}
+			};
+			Creator.lastCreatedAdvancement.consumer = consumer;
+		}
 		return walk(e, false);
 	}
 

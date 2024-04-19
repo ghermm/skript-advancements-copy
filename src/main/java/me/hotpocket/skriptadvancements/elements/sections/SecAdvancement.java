@@ -62,6 +62,7 @@ public class SecAdvancement extends EffectSection {
                 List.of(""), 0, false, Material.STONE, VisibilityType.VISIBLE);
         Creator.tempAdvancements.add(advancement);
         Creator.lastCreatedAdvancement = advancement;
+        Creator.currentEvent = event;
         return walk(event, true);
     }
 

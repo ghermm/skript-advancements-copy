@@ -66,7 +66,7 @@ public class SecAdvancementTab extends EffectSection {
         if (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab) != null && (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).isInitialised() || CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).isActive())) {
             if (CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).getAdvancements() != null) {
                 for (Advancement advancement : CustomUtils.getAPI().getAdvancementTab(Creator.lastCreatedTab).getAdvancements()) {
-                    SkriptAdvancements.triggers.remove(advancement);
+                    SkriptAdvancements.consumers.remove(advancement);
                 }
             }
             CustomUtils.getAPI().unregisterAdvancementTab(Creator.lastCreatedTab);
