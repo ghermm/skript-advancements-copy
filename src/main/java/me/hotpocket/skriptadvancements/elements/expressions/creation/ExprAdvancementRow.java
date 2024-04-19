@@ -12,6 +12,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +35,9 @@ public class ExprAdvancementRow extends SimpleExpression<Number> {
 
     @Override
     protected @Nullable Number[] get(Event e) {
-        return new Number[]{Creator.lastCreatedAdvancement.getDisplay().getY()};
+        if (e instanceof AdvancementCreateEvent event)
+            return new Number[]{event.getTempAdvancement().getDisplay().getY()};
+        return new Number[]{0};
     }
 
     @Override
@@ -68,6 +71,7 @@ public class ExprAdvancementRow extends SimpleExpression<Number> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        Creator.lastCreatedAdvancement.setY(min(max(((Number) delta[0]).floatValue(), 0), 9999999));
+        if (e instanceof AdvancementCreateEvent event)
+            event.getTempAdvancement().setY(min(max(((Number) delta[0]).floatValue(), 0), 9999999));
     }
 }

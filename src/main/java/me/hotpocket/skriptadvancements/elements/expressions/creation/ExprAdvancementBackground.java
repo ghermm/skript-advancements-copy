@@ -13,7 +13,9 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
+import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +34,9 @@ public class ExprAdvancementBackground extends SimpleExpression<ItemType> {
 
     @Override
     protected @Nullable ItemType[] get(Event e) {
-        return new ItemType[]{new ItemType(Creator.lastCreatedAdvancement.getBackground())};
+        if (e instanceof AdvancementCreateEvent event)
+            return new ItemType[]{new ItemType(event.getTempAdvancement().getBackground())};
+        return new ItemType[]{new ItemType(Material.DIRT)};
     }
 
     @Override
@@ -66,6 +70,7 @@ public class ExprAdvancementBackground extends SimpleExpression<ItemType> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        Creator.lastCreatedAdvancement.setBackground(((ItemType) delta[0]).getMaterial());
+        if (e instanceof AdvancementCreateEvent event)
+           event.getTempAdvancement().setBackground(((ItemType) delta[0]).getMaterial());
     }
 }

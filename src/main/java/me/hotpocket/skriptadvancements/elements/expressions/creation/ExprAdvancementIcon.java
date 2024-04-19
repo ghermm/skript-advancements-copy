@@ -13,7 +13,9 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
+import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +35,9 @@ public class ExprAdvancementIcon extends SimpleExpression<ItemType> {
 
     @Override
     protected @Nullable ItemType[] get(Event e) {
-        return new ItemType[]{new ItemType(Creator.lastCreatedAdvancement.getDisplay().getIcon())};
+        if (e instanceof AdvancementCreateEvent event)
+            return new ItemType[]{new ItemType(event.getTempAdvancement().getDisplay().getIcon())};
+        return new ItemType[]{new ItemType(Material.DIRT)};
     }
 
     @Override
@@ -67,9 +71,11 @@ public class ExprAdvancementIcon extends SimpleExpression<ItemType> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        ItemType itemType = (ItemType) delta[0];
-        ItemStack itemStack = new ItemStack(itemType.getMaterial());
-        itemStack.setItemMeta(itemType.getItemMeta());
-        Creator.lastCreatedAdvancement.setIcon(itemStack);
+        if (e instanceof AdvancementCreateEvent event) {
+            ItemType itemType = (ItemType) delta[0];
+            ItemStack itemStack = new ItemStack(itemType.getMaterial());
+            itemStack.setItemMeta(itemType.getItemMeta());
+            event.getTempAdvancement().setIcon(itemStack);
+        }
     }
 }

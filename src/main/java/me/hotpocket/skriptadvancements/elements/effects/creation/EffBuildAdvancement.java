@@ -9,6 +9,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
+import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.elements.sections.SecAdvancement;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import org.bukkit.event.Event;
@@ -28,7 +29,8 @@ public class EffBuildAdvancement extends Effect {
 
     @Override
     protected void execute(Event e) {
-        Creator.lastCreatedAdvancement.build();
+        if (e instanceof AdvancementCreateEvent event)
+            event.getTempAdvancement().build(event);
     }
 
     @Override
