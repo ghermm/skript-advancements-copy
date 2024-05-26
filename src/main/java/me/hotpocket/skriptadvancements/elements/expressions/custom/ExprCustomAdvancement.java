@@ -14,7 +14,7 @@ import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
 import com.fren_gor.ultimateAdvancementAPI.advancement.Advancement;
 import com.fren_gor.ultimateAdvancementAPI.util.AdvancementKey;
 import me.hotpocket.skriptadvancements.SkriptAdvancements;
-import me.hotpocket.skriptadvancements.utils.CustomUtils;
+import me.hotpocket.skriptadvancements.utils.AdvancementUtils;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,8 +37,8 @@ public class ExprCustomAdvancement extends SimpleExpression<Advancement> {
         if (advancementName.getSingle(e).contains("/")) {
             String[] name = advancementName.getSingle(e).toLowerCase().split("/");
             if (UltimateAdvancementAPI.getInstance(SkriptAdvancements.getInstance()).getAdvancementTab(name[0]) != null) {
-                if (CustomUtils.getAPI().getAdvancement(new AdvancementKey(name[0], name[1])) != null)
-                    return new Advancement[]{CustomUtils.getAPI().getAdvancement(new AdvancementKey(name[0], name[1]))};
+                if (AdvancementUtils.getAPI().getAdvancement(new AdvancementKey(name[0], name[1])) != null)
+                    return new Advancement[]{AdvancementUtils.getAPI().getAdvancement(new AdvancementKey(name[0], name[1]))};
             }
         }
         return null;

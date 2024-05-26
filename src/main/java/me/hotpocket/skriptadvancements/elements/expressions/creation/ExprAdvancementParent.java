@@ -12,8 +12,8 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,9 +37,8 @@ public class ExprAdvancementParent extends SimpleExpression<String> {
 
     @Override
     protected @Nullable String[] get(Event e) {
-        if (e instanceof AdvancementCreateEvent event)
-            return event.getTempAdvancement().getParents().toArray(new String[event.getTempAdvancement().getParents().size()]);
-        return new String[]{""};
+        //return Creator.lastCreatedAdvancement.getParents().toArray(new String[Creator.lastCreatedAdvancement.getParents().size()]);
+        return new String[]{Creator.lastCreatedAdvancement.getParent().getName()};
     }
 
     @Override
@@ -73,12 +72,10 @@ public class ExprAdvancementParent extends SimpleExpression<String> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        if (e instanceof AdvancementCreateEvent event) {
-            List<String> parents = new ArrayList<>();
-            for (String parent : Arrays.copyOf(delta, delta.length, String[].class)) {
-                parents.add(parent.toLowerCase().replaceAll(" ", "_"));
-            }
-            event.getTempAdvancement().setParents(parents);
-        }
+        /*List<String> parents = new ArrayList<>();
+        for (String parent : Arrays.copyOf(delta, delta.length, String[].class)) {
+            parents.add(parent.toLowerCase().replaceAll(" ", "_"));
+        }*/
+        Creator.lastCreatedAdvancement.setParent(Creator.lastCreatedTab.getFakeAdvancementByName(((String) delta[0]).toLowerCase().replaceAll(" ", "_")));
     }
 }

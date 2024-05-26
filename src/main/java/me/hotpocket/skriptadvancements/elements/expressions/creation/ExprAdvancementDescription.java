@@ -12,7 +12,6 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -35,9 +34,7 @@ public class ExprAdvancementDescription extends SimpleExpression<String> {
 
     @Override
     protected @Nullable String[] get(Event e) {
-        if (e instanceof AdvancementCreateEvent event)
-            return event.getTempAdvancement().getDisplay().getDescription().toArray(new String[event.getTempAdvancement().getDisplay().getDescription().size()]);
-        return new String[]{""};
+        return Creator.lastCreatedAdvancement.getDisplay().getDescription().toArray(new String[Creator.lastCreatedAdvancement.getDisplay().getDescription().size()]);
     }
 
     @Override
@@ -71,7 +68,6 @@ public class ExprAdvancementDescription extends SimpleExpression<String> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        if (e instanceof AdvancementCreateEvent event)
-            event.getTempAdvancement().setDescription(List.of(Arrays.copyOf(delta, delta.length, String[].class)));
+        Creator.lastCreatedAdvancement.getDisplay().setDescription(List.of(Arrays.copyOf(delta, delta.length, String[].class)));
     }
 }

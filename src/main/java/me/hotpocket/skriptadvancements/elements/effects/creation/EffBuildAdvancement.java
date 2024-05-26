@@ -9,8 +9,8 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.elements.sections.SecAdvancement;
+import me.hotpocket.skriptadvancements.elements.sections.SecRootAdvancement;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -29,8 +29,7 @@ public class EffBuildAdvancement extends Effect {
 
     @Override
     protected void execute(Event e) {
-        if (e instanceof AdvancementCreateEvent event)
-            event.getTempAdvancement().build(event);
+        Creator.lastCreatedAdvancement.send();
     }
 
     @Override
@@ -40,6 +39,6 @@ public class EffBuildAdvancement extends Effect {
 
     @Override
     public boolean init(Expression<?>[] exprs, int matchedPattern, Kleenean isDelayed, SkriptParser.ParseResult parseResult) {
-        return getParser().isCurrentSection(SecAdvancement.class);
+        return getParser().isCurrentSection(SecAdvancement.class) || getParser().isCurrentSection(SecRootAdvancement.class);
     }
 }

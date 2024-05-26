@@ -10,7 +10,7 @@ import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementFrameType;
-import me.hotpocket.skriptadvancements.utils.CustomUtils;
+import me.hotpocket.skriptadvancements.utils.AdvancementUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.advancement.Advancement;
 import org.bukkit.entity.Player;
@@ -39,7 +39,7 @@ public class EffAdvancementToast extends Effect {
         for (Advancement advancement : advancements.getAll(e))
             for (Player player : players.getAll(e))
                 if (advancement.getDisplay() != null)
-                    CustomUtils.getAPI().displayCustomToast(player, advancement.getDisplay().icon(), Bukkit.getUnsafe().legacyComponentSerializer().serialize(advancement.getDisplay().title()), AdvancementFrameType.valueOf(advancement.getDisplay().frame().name()));
+                    AdvancementUtils.getAPI().displayCustomToast(player, advancement.getDisplay().icon(), Bukkit.getUnsafe().legacyComponentSerializer().serialize(advancement.getDisplay().title()), AdvancementFrameType.valueOf(advancement.getDisplay().frame().name()));
     }
 
     @Override

@@ -13,8 +13,8 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
+import me.hotpocket.skriptadvancements.utils.creation.FakeRootAdvancement;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,9 +33,9 @@ public class ExprAdvancementBackgroundString extends SimpleExpression<String> {
 
     @Override
     protected @Nullable String[] get(Event e) {
-        if (e instanceof AdvancementCreateEvent event)
-            return new String[]{event.getTempAdvancement().getBackgroundString()};
-        return new String[]{""};
+        if (Creator.lastCreatedAdvancement instanceof FakeRootAdvancement advancement)
+            return new String[]{advancement.getBackgroundTexture()};
+        return null;
     }
 
     @Override
@@ -69,7 +69,7 @@ public class ExprAdvancementBackgroundString extends SimpleExpression<String> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        if (e instanceof AdvancementCreateEvent event)
-            event.getTempAdvancement().setBackgroundString((String) delta[0]);
+        if (Creator.lastCreatedAdvancement instanceof FakeRootAdvancement advancement)
+            advancement.setBackgroundTexture((String) delta[0]);
     }
 }

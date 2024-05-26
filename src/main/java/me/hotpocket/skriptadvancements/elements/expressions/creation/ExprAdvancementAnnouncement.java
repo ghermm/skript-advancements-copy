@@ -12,7 +12,6 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -32,9 +31,7 @@ public class ExprAdvancementAnnouncement extends SimpleExpression<Boolean> {
 
     @Override
     protected @Nullable Boolean[] get(Event e) {
-        if (e instanceof AdvancementCreateEvent event)
-            return new Boolean[]{event.getTempAdvancement().getDisplay().doesAnnounceToChat()};
-        return new Boolean[]{false};
+        return new Boolean[]{Creator.lastCreatedAdvancement.getDisplay().doesAnnounce()};
     }
 
     @Override
@@ -68,7 +65,6 @@ public class ExprAdvancementAnnouncement extends SimpleExpression<Boolean> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        if (e instanceof AdvancementCreateEvent event)
-            event.getTempAdvancement().setAnnounce((Boolean) delta[0]);
+        Creator.lastCreatedAdvancement.getDisplay().setAnnouncement((Boolean) delta[0]);
     }
 }

@@ -9,7 +9,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import me.hotpocket.skriptadvancements.utils.CustomUtils;
+import me.hotpocket.skriptadvancements.utils.AdvancementUtils;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,8 +28,8 @@ public class EffDisposeTab extends Effect {
 
     @Override
     protected void execute(Event e) {
-        if (CustomUtils.getAPI().getAdvancementTab(tab.getSingle(e)) != null)
-            CustomUtils.getAPI().unregisterAdvancementTab(tab.getSingle(e).toLowerCase().replaceAll(" ", "_"));
+        if (AdvancementUtils.getAPI().getAdvancementTab(tab.getSingle(e)) != null)
+            AdvancementUtils.getAPI().unregisterAdvancementTab(tab.getSingle(e).toLowerCase().replaceAll(" ", "_"));
     }
 
     @Override

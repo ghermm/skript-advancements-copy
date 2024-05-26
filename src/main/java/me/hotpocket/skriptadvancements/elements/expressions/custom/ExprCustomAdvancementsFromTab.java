@@ -7,7 +7,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import com.fren_gor.ultimateAdvancementAPI.advancement.Advancement;
-import me.hotpocket.skriptadvancements.utils.CustomUtils;
+import me.hotpocket.skriptadvancements.utils.AdvancementUtils;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,8 +21,8 @@ public class ExprCustomAdvancementsFromTab extends SimpleExpression<Advancement>
 
     @Override
     protected @Nullable Advancement[] get(Event e) {
-        if (CustomUtils.getAPI().getAdvancementTab(tab.getSingle(e)) != null && CustomUtils.getAPI().getAdvancementTab(tab.getSingle(e)).isInitialised())
-            return CustomUtils.getAPI().getAdvancementTab(tab.getSingle(e)).getAdvancements().toArray(new Advancement[CustomUtils.getAPI().getAdvancementTab(tab.getSingle(e)).getAdvancements().size()]);
+        if (AdvancementUtils.getAPI().getAdvancementTab(tab.getSingle(e)) != null && AdvancementUtils.getAPI().getAdvancementTab(tab.getSingle(e)).isInitialised())
+            return AdvancementUtils.getAPI().getAdvancementTab(tab.getSingle(e)).getAdvancements().toArray(new Advancement[AdvancementUtils.getAPI().getAdvancementTab(tab.getSingle(e)).getAdvancements().size()]);
         return null;
     }
 

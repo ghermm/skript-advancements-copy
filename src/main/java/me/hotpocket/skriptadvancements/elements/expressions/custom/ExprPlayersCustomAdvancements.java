@@ -13,7 +13,7 @@ import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
 import com.fren_gor.ultimateAdvancementAPI.advancement.Advancement;
-import me.hotpocket.skriptadvancements.utils.CustomUtils;
+import me.hotpocket.skriptadvancements.utils.AdvancementUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +40,7 @@ public class ExprPlayersCustomAdvancements extends SimpleExpression<Advancement>
     @Override
     protected @Nullable Advancement[] get(Event e) {
         for (Player player : players.getAll(e))
-            return CustomUtils.getPlayerAdvancements(player).toArray(new Advancement[CustomUtils.getPlayerAdvancements(player).size()]);
+            return AdvancementUtils.getPlayerAdvancements(player).toArray(new Advancement[AdvancementUtils.getPlayerAdvancements(player).size()]);
         return null;
     }
 
@@ -80,7 +80,7 @@ public class ExprPlayersCustomAdvancements extends SimpleExpression<Advancement>
         for (Player player : players.getAll(e)) {
             switch (mode) {
                 case SET:
-                    for (Advancement advancement : CustomUtils.getPlayerAdvancements(player)) {
+                    for (Advancement advancement : AdvancementUtils.getPlayerAdvancements(player)) {
                         advancement.revoke(player);
                     }
                     for (Advancement advancement : advancements) {
@@ -102,7 +102,7 @@ public class ExprPlayersCustomAdvancements extends SimpleExpression<Advancement>
                     }
                     break;
                 case RESET, DELETE:
-                    for (Advancement advancement : CustomUtils.getPlayerAdvancements(player)) {
+                    for (Advancement advancement : AdvancementUtils.getPlayerAdvancements(player)) {
                         advancement.revoke(player);
                     }
                     break;

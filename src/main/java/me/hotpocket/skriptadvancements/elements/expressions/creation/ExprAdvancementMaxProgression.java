@@ -12,7 +12,6 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import ch.njol.util.coll.CollectionUtils;
-import me.hotpocket.skriptadvancements.customevent.AdvancementCreateEvent;
 import me.hotpocket.skriptadvancements.utils.creation.Creator;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
@@ -32,9 +31,7 @@ public class ExprAdvancementMaxProgression extends SimpleExpression<Integer> {
 
     @Override
     protected @Nullable Integer[] get(Event e) {
-        if (e instanceof AdvancementCreateEvent event)
-            return new Integer[]{event.getTempAdvancement().getMaxProgression()};
-        return new Integer[]{0};
+        return new Integer[]{Creator.lastCreatedAdvancement.getMaxProgression()};
     }
 
     @Override
@@ -68,7 +65,6 @@ public class ExprAdvancementMaxProgression extends SimpleExpression<Integer> {
     @Override
     public void change(Event e, @Nullable Object[] delta, Changer.ChangeMode mode) {
         assert delta[0] != null;
-        if (e instanceof AdvancementCreateEvent event)
-            event.getTempAdvancement().setMaxProgression(((Number) delta[0]).intValue());
+        Creator.lastCreatedAdvancement.setMaxProgression(((Number) delta[0]).intValue());
     }
 }

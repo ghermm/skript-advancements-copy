@@ -9,7 +9,7 @@ import ch.njol.skript.lang.Effect;
 import ch.njol.skript.lang.Expression;
 import ch.njol.skript.lang.SkriptParser;
 import ch.njol.util.Kleenean;
-import me.hotpocket.skriptadvancements.utils.CustomUtils;
+import me.hotpocket.skriptadvancements.utils.AdvancementUtils;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ public class EffDisableVanillaAdvancements extends Effect {
 
     @Override
     protected void execute(Event e) {
-        CustomUtils.getAPI().disableVanillaAdvancements();
+        AdvancementUtils.getAPI().disableVanillaAdvancements();
     }
 
     @Override

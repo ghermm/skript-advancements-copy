@@ -11,7 +11,7 @@ import ch.njol.skript.lang.SkriptParser;
 import ch.njol.skript.lang.util.SimpleExpression;
 import ch.njol.util.Kleenean;
 import com.fren_gor.ultimateAdvancementAPI.advancement.Advancement;
-import me.hotpocket.skriptadvancements.utils.CustomUtils;
+import me.hotpocket.skriptadvancements.utils.AdvancementUtils;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +28,7 @@ public class ExprAllCustomAdvancements extends SimpleExpression<Advancement> {
 
     @Override
     protected @Nullable Advancement[] get(Event e) {
-        return CustomUtils.getAdvancements().toArray(new Advancement[CustomUtils.getAdvancements().size()]);
+        return AdvancementUtils.getAdvancements().toArray(new Advancement[AdvancementUtils.getAdvancements().size()]);
     }
 
     @Override
